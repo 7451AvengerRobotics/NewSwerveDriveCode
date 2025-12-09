@@ -237,6 +237,8 @@ public class DriveCommands {
             Commands.run(
                 () -> {
                   double speed = limiter.calculate(WHEEL_RADIUS_MAX_VELOCITY);
+                  System.out.println(speed);
+                  speed = 1;
                   drive.runVelocity(new ChassisSpeeds(0.0, 0.0, speed));
                 },
                 drive)),

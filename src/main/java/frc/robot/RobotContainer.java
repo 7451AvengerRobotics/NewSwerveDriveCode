@@ -43,7 +43,7 @@ public class RobotContainer {
   private final Drive drive;
 
   // Controller
-  private final CommandPS5Controller controller = new CommandPS5Controller(0);
+  private final CommandPS5Controller controller = new CommandPS5Controller(2);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -135,6 +135,9 @@ public class RobotContainer {
 
     // Switch to X pattern when X button is pressed
     controller.cross().onTrue(Commands.runOnce(drive::stopWithX, drive));
+
+    // SRIRAM CHANGES
+    // controller.R2().onTrue(drive.runVelocity(new ChassisSpeeds(1, 0, 0)));
 
     // Reset gyro to 0° when B button is pressed
     controller
