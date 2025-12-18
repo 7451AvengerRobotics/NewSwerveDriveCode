@@ -138,6 +138,8 @@ public class Vision extends SubsystemBase {
             observation.pose().toPose2d(),
             observation.timestamp(),
             VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
+
+        System.out.println("Hey buddy boy");
       }
 
       // Log camera metadata
