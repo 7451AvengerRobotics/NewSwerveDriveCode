@@ -45,7 +45,6 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -383,43 +382,44 @@ public class Drive extends SubsystemBase {
     };
   }
 
-  // The driveToPose Command:
-  public Command driveToPose(Pose2d pose) {
-    return Commands.sequence(
-            runOnce(
-                () -> {
-                  holonomicControllerActive = true;
-                  holonomicDriveWithPIDController.reset(getPose(), getRobotRelativeSpeeds());
-                }),
-            run(() -> {
-                  this.holonomicPoseTarget = pose;
-                  runVelocity(
-                      holonomicDriveWithPIDController.calculate(getPose(), holonomicPoseTarget));
-                })
-                .until(holonomicDriveWithPIDController::atReference),
-            runOnce(this::stop))
-        .finallyDo(() -> holonomicControllerActive = false);
-  }
+  // // The driveToPose Command:
+  // public Command driveToPose(Pose2d pose) {
+  //   return Commands.sequence(
+  //           runOnce(
+  //               () -> {
+  //                 holonomicControllerActive = true;
+  //                 holonomicDriveWithPIDController.reset(getPose(), getRobotRelativeSpeeds());
+  //               }),
+  //           run(() -> {
+  //                 this.holonomicPoseTarget = pose;
+  //                 runVelocity(
+  //                     holonomicDriveWithPIDController.calculate(getPose(), holonomicPoseTarget));
+  //               })
+  //               .until(holonomicDriveWithPIDController::atReference),
+  //           runOnce(this::stop))
+  //       .finallyDo(() -> holonomicControllerActive = false);
+  // }
 
-  // Helper Methods
-  public ChassisSpeeds getRobotRelativeSpeeds() {
-    return kinematics.toChassisSpeeds(
-        modules[0].getState(), modules[1].getState(), modules[2].getState(), modules[3].getState());
-  }
+  // // Helper Methods
+  // public ChassisSpeeds getRobotRelativeSpeeds() {
+  //   return kinematics.toChassisSpeeds(
+  //       modules[0].getState(), modules[1].getState(), modules[2].getState(),
+  // modules[3].getState());
+  // }
 
-  public void resetOdometry(Pose2d pose) {
-    poseEstimator.resetPosition(
-        getGyroRotation(),
-        new SwerveModulePosition[] {
-          new SwerveModulePosition(),
-          new SwerveModulePosition(),
-          new SwerveModulePosition(),
-          new SwerveModulePosition()
-        },
-        pose);
-  }
+  // public void resetOdometry(Pose2d pose) {
+  //   poseEstimator.resetPosition(
+  //       getGyroRotation(),
+  //       new SwerveModulePosition[] {
+  //         new SwerveModulePosition(),
+  //         new SwerveModulePosition(),
+  //         new SwerveModulePosition(),
+  //         new SwerveModulePosition()
+  //       },
+  //       pose);
+  // }
 
-  public Rotation2d getGyroRotation() {
-    return gyroInputs.yawPosition;
-  }
+  // public Rotation2d getGyroRotation() {
+  //   return gyroInputs.yawPosition;
+  // }
 }

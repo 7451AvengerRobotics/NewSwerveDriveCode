@@ -191,9 +191,7 @@ public class DriveCommands {
                   double voltage = timer.get() * FF_RAMP_RATE;
                   drive.runCharacterization(voltage);
                   Double velo = drive.getFFCharacterizationVelocity();
-                  velocitySamples.add(velo);
                   voltageSamples.add(voltage);
-                  System.out.println(velo + "," + voltage);
                 },
                 drive)
 
