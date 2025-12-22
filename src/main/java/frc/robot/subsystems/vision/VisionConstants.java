@@ -21,7 +21,7 @@ public class VisionConstants {
   // Camera names, must match names configured on coprocessor
   // public static String camera0Name = "BackLeft";
   public static String camera1Name = "BackRight";
-  
+
   // Robot to camera transforms
   // (Not used by Limelight, configure in web UI instead)
 
@@ -36,13 +36,13 @@ public class VisionConstants {
   //               Units.degreesToRadians(-72.56)));
   public static Transform3d robotToCamera1 =
       new Transform3d(
-          Units.inchesToMeters(-12.58),
-          Units.inchesToMeters(-11.31),
-          Units.inchesToMeters(7.51),
+          Units.inchesToMeters(-12.51),
+          Units.inchesToMeters(-11.5),
+          Units.inchesToMeters(7.42),
           new Rotation3d(
-              Units.degreesToRadians(86.77),
-              Units.degreesToRadians(-81.33),
-              Units.degreesToRadians(72.56)));
+              Units.degreesToRadians(-3.23),
+              Units.degreesToRadians(-8.67),
+              Units.degreesToRadians(162.56)));
 
   // Basic filtering thresholds
   public static double maxAmbiguity = 0.3;

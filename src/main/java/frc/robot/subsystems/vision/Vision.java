@@ -7,7 +7,19 @@
 
 package frc.robot.subsystems.vision;
 
-import static frc.robot.subsystems.vision.VisionConstants.*;
+import static frc.robot.subsystems.vision.VisionConstants.angularStdDevBaseline;
+import static frc.robot.subsystems.vision.VisionConstants.angularStdDevMegatag2Factor;
+import static frc.robot.subsystems.vision.VisionConstants.aprilTagLayout;
+import static frc.robot.subsystems.vision.VisionConstants.cameraStdDevFactors;
+import static frc.robot.subsystems.vision.VisionConstants.linearStdDevBaseline;
+import static frc.robot.subsystems.vision.VisionConstants.linearStdDevMegatag2Factor;
+import static frc.robot.subsystems.vision.VisionConstants.maxAmbiguity;
+import static frc.robot.subsystems.vision.VisionConstants.maxZError;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -20,9 +32,6 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
-import java.util.LinkedList;
-import java.util.List;
-import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
   private final VisionConsumer consumer;
