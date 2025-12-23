@@ -13,7 +13,17 @@
 
 package frc.robot.subsystems.drive;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.CANBus;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -23,6 +33,7 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.PathPlannerLogging;
+
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
@@ -31,6 +42,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -45,16 +57,14 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
+import frc.robot.Robot;
 import frc.robot.generated.TunerConstants;
 import frc.robot.util.LocalADStarAK;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
 
 public class Drive extends SubsystemBase {
   // TunerConstants doesn't include these constants, so they are declared locally
@@ -382,44 +392,59 @@ public class Drive extends SubsystemBase {
     };
   }
 
-  // // The driveToPose Command:
-  // public Command driveToPose(Pose2d pose) {
-  //   return Commands.sequence(
-  //           runOnce(
-  //               () -> {
-  //                 holonomicControllerActive = true;
-  //                 holonomicDriveWithPIDController.reset(getPose(), getRobotRelativeSpeeds());
-  //               }),
-  //           run(() -> {
-  //                 this.holonomicPoseTarget = pose;
-  //                 runVelocity(
-  //                     holonomicDriveWithPIDController.calculate(getPose(), holonomicPoseTarget));
-  //               })
-  //               .until(holonomicDriveWithPIDController::atReference),
-  //           runOnce(this::stop))
-  //       .finallyDo(() -> holonomicControllerActive = false);
-  // }
+  // The driveToPose Command:
+  public Command driveToPose(Pose2d pose) {
+    return Commands.sequence(
+            runOnce(
+                () -> {
+                  holonomicControllerActive = true;
+                  holonomicDriveWithPIDController.reset(getPose(), getRobotRelativeSpeeds());
+                }),
+            run(() -> {
+                  this.holonomicPoseTarget = pose;
+                  runVelocity(
+                      holonomicDriveWithPIDController.calculate(getPose(), holonomicPoseTarget));
+                })
+                .until(holonomicDriveWithPIDController::atReference),
+            runOnce(this::stop))
+        .finallyDo(() -> holonomicControllerActive = false);
+  }
 
-  // // Helper Methods
-  // public ChassisSpeeds getRobotRelativeSpeeds() {
-  //   return kinematics.toChassisSpeeds(
-  //       modules[0].getState(), modules[1].getState(), modules[2].getState(),
-  // modules[3].getState());
-  // }
+  public Command driveToReefFace(Transform2d offset) {
+    return Commands.defer(
+        () -> {
+          final List<Pose2d> reefCenterPosesList =
+              Robot.IsRedAlliance.getAsBoolean()
+                  ? Arrays.asList(Constants.Reef.redReefs)
+                  : Arrays.asList(Constants.Reef.blueReefs);
+          final Pose2d currentPose = getPose();
+          final Pose2d nearestCoralSide = currentPose.nearest(reefCenterPosesList);
+          Pose2d drivePose = nearestCoralSide.plus(offset);
 
-  // public void resetOdometry(Pose2d pose) {
-  //   poseEstimator.resetPosition(
-  //       getGyroRotation(),
-  //       new SwerveModulePosition[] {
-  //         new SwerveModulePosition(),
-  //         new SwerveModulePosition(),
-  //         new SwerveModulePosition(),
-  //         new SwerveModulePosition()
-  //       },
-  //       pose);
-  // }
+          return driveToPose(drivePose);
+        },
+        Set.of(this));
+  }
 
-  // public Rotation2d getGyroRotation() {
-  //   return gyroInputs.yawPosition;
-  // }
+  // Helper Methods
+  public ChassisSpeeds getRobotRelativeSpeeds() {
+    return kinematics.toChassisSpeeds(
+        modules[0].getState(), modules[1].getState(), modules[2].getState(), modules[3].getState());
+  }
+
+  public void resetOdometry(Pose2d pose) {
+    poseEstimator.resetPosition(
+        getGyroRotation(),
+        new SwerveModulePosition[] {
+          new SwerveModulePosition(),
+          new SwerveModulePosition(),
+          new SwerveModulePosition(),
+          new SwerveModulePosition()
+        },
+        pose);
+  }
+
+  public Rotation2d getGyroRotation() {
+    return gyroInputs.yawPosition;
+  }
 }

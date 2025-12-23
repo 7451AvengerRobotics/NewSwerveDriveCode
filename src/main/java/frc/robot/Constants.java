@@ -13,6 +13,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -33,5 +36,62 @@ public final class Constants {
 
     /** Replaying from a log file. */
     REPLAY
+  }
+
+  public static class Field {
+    public static double fieldWidth = Units.feetToMeters(26.0) + Units.inchesToMeters(5.0);
+    public static double fieldLength = Units.feetToMeters(57.0) + Units.inchesToMeters(6.875);
+
+    public static Pose2d apply(Pose2d reef) {
+      return new Pose2d(
+          fieldLength - reef.getX(),
+          fieldWidth - reef.getY(),
+          reef.getRotation().rotateBy(Rotation2d.kPi));
+    }
+  }
+
+  public static class Reef {
+    public static final Pose2d reef0 =
+        new Pose2d(
+            Units.inchesToMeters(144.0945),
+            Units.inchesToMeters(158.6614),
+            Rotation2d.fromDegrees(0));
+    public static final Pose2d reef1 =
+        new Pose2d(
+            Units.inchesToMeters(160.373),
+            Units.inchesToMeters(186.857),
+            Rotation2d.fromDegrees(300));
+    public static final Pose2d reef2 =
+        new Pose2d(
+            Units.inchesToMeters(193.116),
+            Units.inchesToMeters(186.858),
+            Rotation2d.fromDegrees(240));
+    public static final Pose2d reef3 =
+        new Pose2d(
+            Units.inchesToMeters(209.489),
+            Units.inchesToMeters(158.502),
+            Rotation2d.fromDegrees(180));
+    public static final Pose2d reef4 =
+        new Pose2d(
+            Units.inchesToMeters(193.118),
+            Units.inchesToMeters(130.145),
+            Rotation2d.fromDegrees(120));
+
+    public static final Pose2d reef5 =
+        new Pose2d(
+            Units.inchesToMeters(160.375),
+            Units.inchesToMeters(130.144),
+            Rotation2d.fromDegrees(60));
+
+    public static final Pose2d[] blueReefs = {reef0, reef1, reef2, reef3, reef4, reef5};
+
+    public static final Pose2d[] redReefs = {
+      Field.apply(reef0),
+      Field.apply(reef1),
+      Field.apply(reef2),
+      Field.apply(reef3),
+      Field.apply(reef4),
+      Field.apply(reef5)
+    };
   }
 }
