@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.AutoRoutines;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -33,11 +34,10 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionConstants;
+import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
-
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -50,6 +50,9 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
+
+  // Autos
+  private final AutoRoutines autos;
 
   // Controller
   private final CommandPS5Controller controller = new CommandPS5Controller(2);
@@ -72,10 +75,12 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                // new VisionIOPhotonVision(
-                //    VisionConstants.camera0Name, VisionConstants.robotToCamera0),
                 new VisionIOPhotonVision(
-                    VisionConstants.camera1Name, VisionConstants.robotToCamera1));
+                    VisionConstants.camera0Name, VisionConstants.robotToCamera0)
+                //     ,
+                // new VisionIOPhotonVision(
+                //     VisionConstants.camera1Name, VisionConstants.robotToCamera1)
+                );
 
         break;
 
@@ -91,10 +96,12 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                // new VisionIOPhotonVisionSim(
-                //     VisionConstants.camera0Name, VisionConstants.robotToCamera0, drive::getPose),
                 new VisionIOPhotonVisionSim(
-                    VisionConstants.camera1Name, VisionConstants.robotToCamera1, drive::getPose));
+                    VisionConstants.camera0Name, VisionConstants.robotToCamera0, drive::getPose)
+                // ,
+                // new VisionIOPhotonVisionSim(
+                //     VisionConstants.camera1Name, VisionConstants.robotToCamera1, drive::getPose)
+                );
         break;
 
       default:
@@ -109,6 +116,8 @@ public class RobotContainer {
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         break;
     }
+
+    autos = new AutoRoutines(drive);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -131,6 +140,7 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+    configAutos();
   }
 
   /**
@@ -175,13 +185,18 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    controller.R1().onTrue(
-        Commands.sequence(
-            drive.driveToReefFace(
-                new Transform2d(
-                    new Translation2d(-0.64, 0),
-                    new Rotation2d()))
-            .withTimeout(2)));
+    controller
+        .R1()
+        .onTrue(
+            Commands.sequence(
+                drive
+                    .driveToReefFace(new Transform2d(new Translation2d(-0.64, 0), new Rotation2d()))
+                    .withTimeout(2)));
+  }
+
+  private void configAutos() {
+    autoChooser.addOption("First Auto", autos.firstAuto());
+    autoChooser.addOption("RunVelocityAuton", autos.runVelAuto());
   }
 
   /**

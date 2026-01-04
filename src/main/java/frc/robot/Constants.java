@@ -76,7 +76,6 @@ public final class Constants {
             Units.inchesToMeters(193.118),
             Units.inchesToMeters(130.145),
             Rotation2d.fromDegrees(120));
-
     public static final Pose2d reef5 =
         new Pose2d(
             Units.inchesToMeters(160.375),
