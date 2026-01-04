@@ -19,7 +19,13 @@ public class AutoRoutines {
   public Command firstAuto() {
     System.out.println("AutoRoutines: Starting First Auto");
     return Commands.sequence(
-        drive.driveToReefFace(new Transform2d(new Translation2d(-0.64, 0), new Rotation2d())),
+        drive
+          .driveToReefFace(new Transform2d(new Translation2d(-0.64, 0), new Rotation2d()))
+          /*THOSE FROM CHIEF DELPHI VIEWING CODE
+          * I mention the .withTimeout(2) in the post
+          * You can add that in place of this comment
+          */
+          ,
         drive.followPPPathCommand("Example Path"));
   }
 

@@ -46,6 +46,18 @@ public class HolonomicDriveWithPIDController {
     this.xController.setTolerance(poseTolerance.getX(), poseTolerance.getX() * 1.5);
     this.yController.setTolerance(poseTolerance.getY(), poseTolerance.getY() * 1.5);
   }
+  
+  public boolean xReferenceReached() {
+    return xController.atSetpoint();
+  }
+
+  public boolean yReferenceReached() {
+    return yController.atSetpoint();
+  }
+
+  public boolean rotationReferenceReached() {
+    return rotationController.atSetpoint();
+  }
 
   public ChassisSpeeds calculate(final Pose2d currentPose, final Pose2d targetPose) {
     final double xFeedback = xController.calculate(currentPose.getX(), targetPose.getX());

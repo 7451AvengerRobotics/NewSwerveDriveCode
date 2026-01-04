@@ -47,6 +47,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -79,7 +80,7 @@ public class Drive extends SubsystemBase {
 
   // PathPlanner config constants
   private static final double ROBOT_MASS_KG = 23.00;
-  private static final double ROBOT_MOI = 3.01;
+  private static final double ROBOT_MOI = 2.152;
   private static final double WHEEL_COF = 1.2;
   private static final RobotConfig PP_CONFIG =
       new RobotConfig(
@@ -411,27 +412,6 @@ public class Drive extends SubsystemBase {
         Set.of(this));
   }
 
-  public Command miniFollow(String pathName) {
-    System.out.println("HEY\nHEY\nHEY\nHEY\nHEY\nHEY");
-    return Commands.defer(
-        () -> {
-          try {
-            // Load the path you want to follow using its name in the GUI
-            PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
-
-            Pose2d startingPose = path.getStartingHolonomicPose().get();
-
-            // Create a path following command using AutoBuilder. This will also trigger
-            // event markers.
-            return (AutoBuilder.followPath(path));
-          } catch (Exception e) {
-            DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-            return Commands.none();
-          }
-        },
-        Set.of(this));
-  }
-
   // The driveToPose Command:
   public Command driveToPose(Pose2d pose) {
     return Commands.sequence(
@@ -444,6 +424,9 @@ public class Drive extends SubsystemBase {
                   this.holonomicPoseTarget = pose;
                   runVelocity(
                       holonomicDriveWithPIDController.calculate(getPose(), holonomicPoseTarget));
+                  SmartDashboard.putBoolean("x controller", holonomicDriveWithPIDController.xReferenceReached());
+                  SmartDashboard.putBoolean("y controller", holonomicDriveWithPIDController.yReferenceReached());
+                  SmartDashboard.putBoolean("rotation controller", holonomicDriveWithPIDController.rotationReferenceReached());
                 })
                 .until(holonomicDriveWithPIDController::atReference),
             runOnce(this::stop))
