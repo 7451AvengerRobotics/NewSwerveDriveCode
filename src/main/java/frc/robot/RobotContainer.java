@@ -76,11 +76,9 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOPhotonVision(
-                    VisionConstants.camera0Name, VisionConstants.robotToCamera0)
-                //     ,
-                // new VisionIOPhotonVision(
-                //     VisionConstants.camera1Name, VisionConstants.robotToCamera1)
-                );
+                    VisionConstants.camera0Name, VisionConstants.robotToCamera0),
+                new VisionIOPhotonVision(
+                    VisionConstants.camera1Name, VisionConstants.robotToCamera1));
 
         break;
 
@@ -97,11 +95,9 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOPhotonVisionSim(
-                    VisionConstants.camera0Name, VisionConstants.robotToCamera0, drive::getPose)
-                // ,
-                // new VisionIOPhotonVisionSim(
-                //     VisionConstants.camera1Name, VisionConstants.robotToCamera1, drive::getPose)
-                );
+                    VisionConstants.camera0Name, VisionConstants.robotToCamera0, drive::getPose),
+                new VisionIOPhotonVisionSim(
+                    VisionConstants.camera1Name, VisionConstants.robotToCamera1, drive::getPose));
         break;
 
       default:
@@ -190,7 +186,8 @@ public class RobotContainer {
         .onTrue(
             Commands.sequence(
                 drive
-                    .driveToReefFace(new Transform2d(new Translation2d(-0.64, 0), new Rotation2d()))
+                    .driveToReefFace(
+                        new Transform2d(new Translation2d(-0.64, 0), new Rotation2d(Math.PI)))
                     .withTimeout(2)));
   }
 
