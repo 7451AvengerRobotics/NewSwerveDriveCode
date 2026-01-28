@@ -19,7 +19,11 @@ public class AutoRoutines {
   public Command firstAuto() {
     System.out.println("AutoRoutines: Starting First Auto");
     return Commands.sequence(
-        drive.driveToReefFace(new Transform2d(new Translation2d(-0.64, 0), new Rotation2d(Math.PI))),
+        drive.driveToReefFace(
+            new Transform2d(new Translation2d(-0.64, 0), new Rotation2d(Math.PI))),
+        drive.followPPPathCommand("Example Path"),
+        drive.driveToReefFace(
+            new Transform2d(new Translation2d(-0.64, 0), new Rotation2d(Math.PI))),
         drive.followPPPathCommand("Example Path"));
   }
 
