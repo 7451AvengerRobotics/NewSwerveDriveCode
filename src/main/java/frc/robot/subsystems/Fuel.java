@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.concurrent.locks.Condition;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -57,7 +55,12 @@ public class Fuel {
 
   // Removes the ball after __ seconds
   public boolean isDead() {
-    boolean startTimerCondition = (hub.getX() - getX()) < 0.1 && (hub.getX() - getX()) > -0.1 && (hub.getY() - getY()) < 0.1 && (hub.getY() - getY()) > -0.1 && getZ() < 1.829;
+    boolean startTimerCondition =
+        (hub.getX() - getX()) < 0.1
+            && (hub.getX() - getX()) > -0.1
+            && (hub.getY() - getY()) < 0.1
+            && (hub.getY() - getY()) > -0.1
+            && getZ() < 1.829;
     if (startTimerCondition) {
       if (!killValue) {
         killValue = true;

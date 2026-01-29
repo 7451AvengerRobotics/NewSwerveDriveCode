@@ -17,9 +17,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -54,7 +52,7 @@ public class RobotContainer {
   private final Drive drive;
   private final Vision vision;
   private final Turret leftTurret;
-  private final Turret righTurret;
+  private final Turret rightTurret;
 
   // Autos
   private final AutoRoutines autos;
@@ -119,8 +117,8 @@ public class RobotContainer {
     }
 
     autos = new AutoRoutines(drive);
-    leftTurret = new Turret(drive, new Transform3d(-0.17, -0.15, 0.39, new Rotation3d()));
-    righTurret = new Turret(drive, new Transform3d(-0.17, 0.15, 0.39, new Rotation3d()));
+    leftTurret = new Turret(drive, new Transform3d(-0.17, -0.15, 0.39, new Rotation3d()), "Left");
+    rightTurret = new Turret(drive, new Transform3d(-0.17, 0.15, 0.39, new Rotation3d()), "Right");
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -189,7 +187,7 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     controller.L1().onTrue(leftTurret.shootBallCommand());
-    controller.R1().onTrue(righTurret.shootBallCommand());
+    controller.R1().onTrue(rightTurret.shootBallCommand());
   }
 
   private void configAutos() {
