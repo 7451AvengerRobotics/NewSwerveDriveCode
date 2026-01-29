@@ -41,7 +41,7 @@ public class Turret extends SubsystemBase {
     Logger.recordOutput("ZeroedComponentPoses_" + name, new Pose3d[] {new Pose3d()});
     Logger.recordOutput(
         "FinalPoses_" + name,
-        new Pose3d[] {new Pose3d(turretOffset.getTranslation(), new Rotation3d(0, 0, trackHub()))});
+        new Pose3d[] {new Pose3d(turretOffset.getTranslation(), new Rotation3d(0, 0, calcYaw()))});
 
     activeFuel.removeIf(
         fuel -> {
@@ -53,7 +53,7 @@ public class Turret extends SubsystemBase {
         "GamePieces/Fuel_" + name, activeFuel.stream().map(Fuel::getPose).toArray(Pose3d[]::new));
   }
 
-  public double trackHub() {
+  public double calcYaw() {
     double deltax = hub.getX() - turretPos.getX();
     double deltay = hub.getY() - turretPos.getY();
     double initTheta;
@@ -69,12 +69,17 @@ public class Turret extends SubsystemBase {
             + Math.PI / 2
             + Math.signum(deltax) * Math.PI / 2;
 
+    
+
     SmartDashboard.putNumber("Pitch Theta", calcPitch() * 180 / Math.PI);
 
     return theta;
   }
 
   public void shootBall() {
+    double v0 = calcVelocity();
+    double pitch0 = calcPitch();
+
     activeFuel.add(new Fuel(calcPitch(), calcVelocity(), turretPos));
   }
 
