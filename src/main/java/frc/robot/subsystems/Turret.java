@@ -77,10 +77,10 @@ public class Turret extends SubsystemBase {
   }
 
   public void shootBall() {
-    double v0 = calcVelocity();
-    double pitch0 = calcPitch();
+    double v0 = calcUnadjustedVelocity();
+    double pitch0 = calcUnadjustedPitch();
 
-    activeFuel.add(new Fuel(calcPitch(), calcVelocity(), turretPos));
+    activeFuel.add(new Fuel(v0, pitch0, turretPos));
   }
 
   public Command shootBallCommand() {
@@ -90,7 +90,7 @@ public class Turret extends SubsystemBase {
         });
   }
 
-  public double calcVelocity() {
+  public double calcUnadjustedVelocity() {
     double yf = 1.329;
     double xf =
         Math.sqrt(
@@ -102,7 +102,7 @@ public class Turret extends SubsystemBase {
     return vel;
   }
 
-  public double calcPitch() {
+  public double calcUnadjustedPitch() {
     double yf = 1.329;
     double xf =
         Math.sqrt(
