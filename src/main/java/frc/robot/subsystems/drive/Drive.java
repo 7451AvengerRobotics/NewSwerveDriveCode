@@ -424,9 +424,13 @@ public class Drive extends SubsystemBase {
                   this.holonomicPoseTarget = pose;
                   runVelocity(
                       holonomicDriveWithPIDController.calculate(getPose(), holonomicPoseTarget));
-                  SmartDashboard.putBoolean("x controller", holonomicDriveWithPIDController.xReferenceReached());
-                  SmartDashboard.putBoolean("y controller", holonomicDriveWithPIDController.yReferenceReached());
-                  SmartDashboard.putBoolean("rotation controller", holonomicDriveWithPIDController.rotationReferenceReached());
+                  SmartDashboard.putBoolean(
+                      "x controller", holonomicDriveWithPIDController.xReferenceReached());
+                  SmartDashboard.putBoolean(
+                      "y controller", holonomicDriveWithPIDController.yReferenceReached());
+                  SmartDashboard.putBoolean(
+                      "rotation controller",
+                      holonomicDriveWithPIDController.rotationReferenceReached());
                 })
                 .until(holonomicDriveWithPIDController::atReference),
             runOnce(this::stop))
