@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.AutoRoutines;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -50,6 +51,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
+  private final Turret turret;
 
   // Autos
   private final AutoRoutines autos;
@@ -114,6 +116,7 @@ public class RobotContainer {
     }
 
     autos = new AutoRoutines(drive);
+    turret = new Turret(drive);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -189,6 +192,8 @@ public class RobotContainer {
                     .driveToReefFace(
                         new Transform2d(new Translation2d(-0.64, 0), new Rotation2d(Math.PI)))
                     .withTimeout(2)));
+
+    controller.L1().onTrue(turret.shootBallCommand());
   }
 
   private void configAutos() {
